@@ -1,5 +1,6 @@
 const bodyParser = require('body-parser');
 const mongoose=require('mongoose');
+const path = require('path');
 const express=require('express');
 const dotenv=require("dotenv");
 const companyRouter=require('./routes/companyRoutes');
