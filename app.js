@@ -4,6 +4,7 @@ const path = require('path');
 const express=require('express');
 const dotenv=require("dotenv");
 const companyRouter=require('./routes/companyRoutes');
+const reviewRouter=require('./routes/reviewRoutes');
 
 const app=express();
 dotenv.config({path:'./config.env'});
@@ -22,6 +23,7 @@ mongoose.connect(DB,).then((con)=>{
 
 
 app.use('/api/v1',companyRouter);
+app.use('/api/v1/review',reviewRouter);
 app.get('/review', (req, res) => {
   res.sendFile(path.join(__dirname, 'review.html'));
 });
