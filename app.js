@@ -21,6 +21,9 @@ mongoose.connect(DB,).then((con)=>{
 
 
 app.use('/api/v1',companyRouter);
+app.get('/review', (req, res) => {
+  res.sendFile(path.join(__dirname, 'review.html'));
+});
 const PORT=3000;
 app.listen(PORT,(req,res)=>{
   console.log("app is running on port 3000")
