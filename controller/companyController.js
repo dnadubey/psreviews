@@ -20,3 +20,23 @@ exports.addCompany=async(req,res)=>{
     }
 
 }
+
+exports.getCompany=async(req,res)=>{
+
+  console.log("hi");
+    try{
+      const companyData=await Company.find();
+
+      res.status(200).json({
+        status:"Success",
+        data:companyData,
+      })
+    }catch(err){
+     res.status(400).json({
+        status:"Failed",
+        message:err.message
+     })
+
+    }
+
+}
