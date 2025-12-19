@@ -7,7 +7,7 @@ router.route("/")
             get(companyController.getCompany);
 
  router.route("/:id")
-            .post(companyController.updateCompany);
+            .put(companyController.updateCompany);
                       
 
 module.exports = router;
