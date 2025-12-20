@@ -4,6 +4,9 @@ const reviewController = require("./../controller/reviewController.js");
 
 router.route("/")
             .post(reviewController.submitReview);
+            
+router.route("/:companyId")
+            .get(reviewController.getReviews);            
            
 
                       
