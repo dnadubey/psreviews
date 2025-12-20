@@ -22,6 +22,6 @@ exports.submitReview=async (req, res) => {
     //res.send("<h2 style='text-align:center'>Thank you for your review ⭐</h2>");
   } catch (error) {
     console.error(error);
-    res.status(500).send("Failed to submit review");
+    res.status(500).send(err.message);
   }
 };
