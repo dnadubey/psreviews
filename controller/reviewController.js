@@ -1,6 +1,7 @@
 const Review=require('./../modal/reviewModel')
 
 exports.submitReview=async (req, res) => {
+  console.log("inside submit review");
   try {
     // const review = new Review({
     //   companyId: req.body.companyId,
