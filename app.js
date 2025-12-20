@@ -9,6 +9,8 @@ const reviewRouter=require('./routes/reviewRoutes');
 const app=express();
 dotenv.config({path:'./config.env'});
 
+
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(bodyParser.json());
 
