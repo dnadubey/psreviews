@@ -15,10 +15,10 @@ exports.submitReview=async (req, res) => {
     // await review.save();
 
     const data= await Review.create(req.body);
-    res.status(200).json({
-        status:"Success",
-        data:data
-    })
+    // res.status(200).json({
+    //     status:"Success",
+    //     data:data
+    // })
 
     res.send("<h2 style='text-align:center'>Thank you for your review ⭐</h2>");
   } catch (error) {
