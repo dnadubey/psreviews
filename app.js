@@ -24,7 +24,7 @@ mongoose.connect(DB,).then((con)=>{
 
 app.use('/api/v1',companyRouter);
 app.use('/api/v1/review',reviewRouter);
-app.get('/review', (req, res) => {
+app.get('/review/:companyId', (req, res) => {
   res.sendFile(path.join(__dirname, 'review.html'));
 });
 const PORT=3000;
