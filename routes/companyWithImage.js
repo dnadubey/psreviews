@@ -1,6 +1,6 @@
 const express = require("express");
 const upload = require("../util/upload");
-const Company = require("../modal/Company");
+const Company = require("../modal/companyModal");
 
 const router = express.Router();
 
