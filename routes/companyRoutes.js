@@ -10,7 +10,7 @@ router
 
 router
   .route("/:id")
-  .put(companyController.updateCompany)
+  .put(upload.single("logo"),companyController.updateCompany)
   .delete(companyController.deleteCompany);
 
 router.get("/logo/:id", companyController.getCompanyLogo);
