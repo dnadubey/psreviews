@@ -65,60 +65,108 @@ exports.getCompany = async (req, res) => {
 };
 
 /* ---------- UPDATE COMPANY ---------- */
-exports.updateCompany = async (req, res) => {
+exports.updateCompanyWithLogo = async (req, res) => {
   try {
-    const companyId = req.params.id;
+    const { id } = req.params;
+    const gfsBucket = req.app.get("gfsBucket");
 
-    const company = await Company.findById(companyId);
-    if (!company) {
-      return res.status(404).json({
-        status: "Failed",
-        message: "Company not found",
+    // Prepare update fields
+    const updatedData = {
+      name: req.body.name,
+      title: req.body.title,
+      googleReviewLink: req.body.googleReviewLink,
+      minimumRating: req.body.minimumRating,
+      negativeReviewEmail: req.body.negativeReviewEmail,
+    };
+
+    // Update logo if new file is uploaded
+    if (req.file) {
+      const uploadStream = gfsBucket.openUploadStream(req.file.originalname, {
+        contentType: req.file.mimetype,
+      });
+      uploadStream.end(req.file.buffer);
+
+      await new Promise((resolve, reject) => {
+        uploadStream.on("finish", () => {
+          updatedData.logo = uploadStream.id; // Save new logo ID
+          resolve(true);
+        });
+        uploadStream.on("error", reject);
       });
     }
 
-    // ✅ Update normal fields
-    company.name = req.body.name ?? company.name;
-    company.title = req.body.title ?? company.title;
-    company.googleReviewLink =
-      req.body.googleReviewLink ?? company.googleReviewLink;
-    company.minimumRating =
-      req.body.minimumRating ?? company.minimumRating;
-    company.negativeReviewEmail =
-      req.body.negativeReviewEmail ?? company.negativeReviewEmail;
+    // Update company in MongoDB
+    const updatedCompany = await Company.findByIdAndUpdate(id, updatedData, {
+      new: true,
+      runValidators: true,
+    });
 
-    // ✅ If new logo uploaded
-    if (req.file) {
-      // 🔥 Delete old logo from GridFS
-      if (company.logo) {
-        try {
-          await gfsBucket.delete(
-            new mongoose.Types.ObjectId(company.logo)
-          );
-        } catch (err) {
-          console.warn("Old logo not found in GridFS");
-        }
-      }
-
-      // ✅ Save new logo ObjectId
-      company.logo = req.file.id;
+    if (!updatedCompany) {
+      return res.status(404).json({ status: "Failed", message: "Company not found" });
     }
 
-    await company.save();
-
-    res.status(200).json({
-      status: "Success",
-      message: "Company updated successfully",
-      data: company,
-    });
+    res.status(200).json({ status: "Success", data: updatedCompany });
   } catch (err) {
-    res.status(400).json({
-      status: "Failed",
-      message: err.message,
-    });
+    res.status(400).json({ status: "Failed", message: err.message });
   }
 };
+
 // exports.updateCompany = async (req, res) => {
+//   try {
+//     const companyId = req.params.id;
+
+//     const company = await Company.findById(companyId);
+//     if (!company) {
+//       return res.status(404).json({
+//         status: "Failed",
+//         message: "Company not found",
+//       });
+//     }
+
+//     // ✅ Update normal fields
+//     company.name = req.body.name ?? company.name;
+//     company.title = req.body.title ?? company.title;
+//     company.googleReviewLink =
+//       req.body.googleReviewLink ?? company.googleReviewLink;
+//     company.minimumRating =
+//       req.body.minimumRating ?? company.minimumRating;
+//     company.negativeReviewEmail =
+//       req.body.negativeReviewEmail ?? company.negativeReviewEmail;
+
+//     // ✅ If new logo uploaded
+//     if (req.file) {
+//       // 🔥 Delete old logo from GridFS
+//       if (company.logo) {
+//         try {
+//           await gfsBucket.delete(
+//             new mongoose.Types.ObjectId(company.logo)
+//           );
+//         } catch (err) {
+//           console.warn("Old logo not found in GridFS");
+//         }
+//       }
+
+//       // ✅ Save new logo ObjectId
+//       company.logo = req.file.id;
+//     }
+
+//     await company.save();
+
+//     res.status(200).json({
+//       status: "Success",
+//       message: "Company updated successfully",
+//       data: company,
+//     });
+//   } catch (err) {
+//     res.status(400).json({
+//       status: "Failed",
+//       message: err.message,
+//     });
+//   }
+// };
+
+
+
 //   try {
 //     const updatedCompany = await Company.findByIdAndUpdate(
 //       req.params.id,
