@@ -12,12 +12,25 @@ const CompanySchema = new mongoose.Schema(
     googleReviewLink: String,
     minimumRating: Number,
     negativeReviewEmail: String,
-    isActive: { type: Boolean, default: true },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("company", CompanySchema);
+module.exports = mongoose.model("Company", CompanySchema);
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28,6 +41,35 @@ module.exports = mongoose.model("company", CompanySchema);
 
 
 // const mongoose = require("mongoose");
+
+// const CompanySchema = new mongoose.Schema(
+//   {
+//     name: String,
+//     title: String,
+
+//     logo: {
+//       type: mongoose.Schema.Types.ObjectId, // GridFS file ID
+//     },
+
+//     googleReviewLink: String,
+//     minimumRating: Number,
+//     negativeReviewEmail: String,
+//     isActive: { type: Boolean, default: true },
+//   },
+//   { timestamps: true }
+// );
+
+// module.exports = mongoose.model("company", CompanySchema);
+
+
+
+
+
+
+
+
+
+
 
 // const CompanySchema = new mongoose.Schema(
 //   {

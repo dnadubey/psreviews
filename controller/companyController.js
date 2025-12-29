@@ -1,58 +1,76 @@
-const Company=require('./../modal/companyModal')
+const Company = require("../modal/companyModal");
+const { ObjectId } = require("mongodb");
 
+/* ---------- ADD COMPANY ---------- */
+exports.addCompany = async (req, res) => {
+  try {
+    const gfsBucket = req.app.get("gfsBucket");
+    let logoId = null;
 
-exports.addCompany=async(req,res)=>{
+    if (req.file) {
+      const uploadStream = gfsBucket.openUploadStream(
+        req.file.originalname,
+        { contentType: req.file.mimetype }
+      );
 
-  console.log("hi");
-    try{
-      const company=await Company.create(req.body);
+      uploadStream.end(req.file.buffer);
 
-      res.status(200).json({
-        status:"Success",
-        data:company,
-      })
-    }catch(err){
-     res.status(400).json({
-        status:"Failed",
-        message:err.message
-     })
-
+      await new Promise((resolve, reject) => {
+        uploadStream.on("finish", () => {
+          logoId = uploadStream.id;
+          resolve();
+        });
+        uploadStream.on("error", reject);
+      });
     }
 
-}
+    const company = await Company.create({
+      name: req.body.name,
+      title: req.body.title,
+      googleReviewLink: req.body.googleReviewLink,
+      minimumRating: req.body.minimumRating,
+      negativeReviewEmail: req.body.negativeReviewEmail,
+      logo: logoId,
+    });
 
-exports.getCompany=async(req,res)=>{
+    res.status(201).json({
+      status: "Success",
+      data: company,
+    });
 
-  console.log("hi");
-    try{
-      const companyData=await Company.find();
+  } catch (err) {
+    res.status(400).json({
+      status: "Failed",
+      message: err.message,
+    });
+  }
+};
 
-      res.status(200).json({
-        status:"Success",
-        data:companyData,
-      })
-    }catch(err){
-     res.status(400).json({
-        status:"Failed",
-        message:err.message
-     })
+/* ---------- GET ALL COMPANIES ---------- */
+exports.getCompany = async (req, res) => {
+  try {
+    const companies = await Company.find();
 
-    }
+    res.status(200).json({
+      status: "Success",
+      data: companies,
+    });
 
-}
+  } catch (err) {
+    res.status(400).json({
+      status: "Failed",
+      message: err.message,
+    });
+  }
+};
 
-
+/* ---------- UPDATE COMPANY ---------- */
 exports.updateCompany = async (req, res) => {
   try {
-    const { id } = req.params;
-
     const updatedCompany = await Company.findByIdAndUpdate(
-      id,
+      req.params.id,
       req.body,
-      {
-        new: true,        // return updated document
-        runValidators: true,
-      }
+      { new: true, runValidators: true }
     );
 
     if (!updatedCompany) {
@@ -64,7 +82,7 @@ exports.updateCompany = async (req, res) => {
 
     res.status(200).json({
       status: "Success",
-    //  data: updatedCompany,
+      data: updatedCompany,
     });
 
   } catch (err) {
@@ -75,13 +93,12 @@ exports.updateCompany = async (req, res) => {
   }
 };
 
+/* ---------- DELETE COMPANY ---------- */
 exports.deleteCompany = async (req, res) => {
   try {
-    const { id } = req.params;
+    const company = await Company.findByIdAndDelete(req.params.id);
 
-    const deletedCompany = await Company.findByIdAndDelete(id);
-
-    if (!deletedCompany) {
+    if (!company) {
       return res.status(404).json({
         status: "Failed",
         message: "Company not found",
@@ -100,3 +117,122 @@ exports.deleteCompany = async (req, res) => {
     });
   }
 };
+
+/* ---------- GET COMPANY LOGO ---------- */
+exports.getCompanyLogo = (req, res) => {
+  const gfsBucket = req.app.get("gfsBucket");
+
+  gfsBucket
+    .openDownloadStream(new ObjectId(req.params.id))
+    .pipe(res);
+};
+
+
+
+
+
+
+
+
+// const Company=require('./../modal/companyModal')
+
+
+// exports.addCompany=async(req,res)=>{
+
+//   console.log("hi");
+//     try{
+//       const company=await Company.create(req.body);
+
+//       res.status(200).json({
+//         status:"Success",
+//         data:company,
+//       })
+//     }catch(err){
+//      res.status(400).json({
+//         status:"Failed",
+//         message:err.message
+//      })
+
+//     }
+
+// }
+
+// exports.getCompany=async(req,res)=>{
+
+//   console.log("hi");
+//     try{
+//       const companyData=await Company.find();
+
+//       res.status(200).json({
+//         status:"Success",
+//         data:companyData,
+//       })
+//     }catch(err){
+//      res.status(400).json({
+//         status:"Failed",
+//         message:err.message
+//      })
+
+//     }
+
+// }
+
+
+// exports.updateCompany = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     const updatedCompany = await Company.findByIdAndUpdate(
+//       id,
+//       req.body,
+//       {
+//         new: true,        // return updated document
+//         runValidators: true,
+//       }
+//     );
+
+//     if (!updatedCompany) {
+//       return res.status(404).json({
+//         status: "Failed",
+//         message: "Company not found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       status: "Success",
+//     //  data: updatedCompany,
+//     });
+
+//   } catch (err) {
+//     res.status(400).json({
+//       status: "Failed",
+//       message: err.message,
+//     });
+//   }
+// };
+
+// exports.deleteCompany = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     const deletedCompany = await Company.findByIdAndDelete(id);
+
+//     if (!deletedCompany) {
+//       return res.status(404).json({
+//         status: "Failed",
+//         message: "Company not found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       status: "Success",
+//       message: "Company deleted successfully",
+//     });
+
+//   } catch (err) {
+//     res.status(400).json({
+//       status: "Failed",
+//       message: err.message,
+//     });
+//   }
+// };
