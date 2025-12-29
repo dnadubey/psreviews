@@ -65,7 +65,7 @@ exports.getCompany = async (req, res) => {
 };
 
 /* ---------- UPDATE COMPANY ---------- */
-exports.updateCompanyWithLogo = async (req, res) => {
+exports.updateCompany= async (req, res) => {
   try {
     const { id } = req.params;
     const gfsBucket = req.app.get("gfsBucket");
