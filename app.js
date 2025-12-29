@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
+const reviewRouter=require('./routes/reviewRoutes');
 const { GridFSBucket } = require("mongodb");
 
 const companyRouter = require("./routes/companyRoutes");
