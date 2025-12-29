@@ -65,12 +65,18 @@ exports.getCompany = async (req, res) => {
 };
 
 /* ---------- UPDATE COMPANY ---------- */
-exports.updateCompany= async (req, res) => {
+
+exports.updateCompany = async (req, res) => {
   try {
     const { id } = req.params;
     const gfsBucket = req.app.get("gfsBucket");
 
-    // Prepare update fields
+    // Find current company
+    const company = await Company.findById(id);
+    if (!company) {
+      return res.status(404).json({ status: "Failed", message: "Company not found" });
+    }
+
     const updatedData = {
       name: req.body.name,
       title: req.body.title,
@@ -79,8 +85,18 @@ exports.updateCompany= async (req, res) => {
       negativeReviewEmail: req.body.negativeReviewEmail,
     };
 
-    // Update logo if new file is uploaded
+    // If new logo uploaded
     if (req.file) {
+      // Delete old logo if exists
+      if (company.logo) {
+        try {
+          await gfsBucket.delete(new ObjectId(company.logo));
+        } catch (err) {
+          console.warn("Old logo delete failed:", err.message);
+        }
+      }
+
+      // Upload new logo
       const uploadStream = gfsBucket.openUploadStream(req.file.originalname, {
         contentType: req.file.mimetype,
       });
@@ -95,75 +111,68 @@ exports.updateCompany= async (req, res) => {
       });
     }
 
-    // Update company in MongoDB
+    // Update company document
     const updatedCompany = await Company.findByIdAndUpdate(id, updatedData, {
       new: true,
       runValidators: true,
     });
-
-    if (!updatedCompany) {
-      return res.status(404).json({ status: "Failed", message: "Company not found" });
-    }
 
     res.status(200).json({ status: "Success", data: updatedCompany });
   } catch (err) {
     res.status(400).json({ status: "Failed", message: err.message });
   }
 };
-
-// exports.updateCompany = async (req, res) => {
+// exports.updateCompany= async (req, res) => {
 //   try {
-//     const companyId = req.params.id;
+//     const { id } = req.params;
+//     const gfsBucket = req.app.get("gfsBucket");
 
-//     const company = await Company.findById(companyId);
-//     if (!company) {
-//       return res.status(404).json({
-//         status: "Failed",
-//         message: "Company not found",
+//     // Prepare update fields
+//     const updatedData = {
+//       name: req.body.name,
+//       title: req.body.title,
+//       googleReviewLink: req.body.googleReviewLink,
+//       minimumRating: req.body.minimumRating,
+//       negativeReviewEmail: req.body.negativeReviewEmail,
+//     };
+
+//     // Update logo if new file is uploaded
+//     if (req.file) {
+//       const uploadStream = gfsBucket.openUploadStream(req.file.originalname, {
+//         contentType: req.file.mimetype,
+//       });
+//       uploadStream.end(req.file.buffer);
+
+//       await new Promise((resolve, reject) => {
+//         uploadStream.on("finish", () => {
+//           updatedData.logo = uploadStream.id; // Save new logo ID
+//           resolve(true);
+//         });
+//         uploadStream.on("error", reject);
 //       });
 //     }
 
-//     // ✅ Update normal fields
-//     company.name = req.body.name ?? company.name;
-//     company.title = req.body.title ?? company.title;
-//     company.googleReviewLink =
-//       req.body.googleReviewLink ?? company.googleReviewLink;
-//     company.minimumRating =
-//       req.body.minimumRating ?? company.minimumRating;
-//     company.negativeReviewEmail =
-//       req.body.negativeReviewEmail ?? company.negativeReviewEmail;
+//     // Update company in MongoDB
+//     const updatedCompany = await Company.findByIdAndUpdate(id, updatedData, {
+//       new: true,
+//       runValidators: true,
+//     });
 
-//     // ✅ If new logo uploaded
-//     if (req.file) {
-//       // 🔥 Delete old logo from GridFS
-//       if (company.logo) {
-//         try {
-//           await gfsBucket.delete(
-//             new mongoose.Types.ObjectId(company.logo)
-//           );
-//         } catch (err) {
-//           console.warn("Old logo not found in GridFS");
-//         }
-//       }
-
-//       // ✅ Save new logo ObjectId
-//       company.logo = req.file.id;
+//     if (!updatedCompany) {
+//       return res.status(404).json({ status: "Failed", message: "Company not found" });
 //     }
 
-//     await company.save();
-
-//     res.status(200).json({
-//       status: "Success",
-//       message: "Company updated successfully",
-//       data: company,
-//     });
+//     res.status(200).json({ status: "Success", data: updatedCompany });
 //   } catch (err) {
-//     res.status(400).json({
-//       status: "Failed",
-//       message: err.message,
-//     });
+//     res.status(400).json({ status: "Failed", message: err.message });
 //   }
 // };
+
+
+
+
+
+
 
 
 
