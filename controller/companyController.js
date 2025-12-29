@@ -206,7 +206,7 @@ exports.updateCompany = async (req, res) => {
 /* ---------- DELETE COMPANY ---------- */
 exports.deleteCompany = async (req, res) => {
   try {
-    const company = await Company.findByIdAndDelete(req.params.id);
+    const company = await Company.findById(req.params.id);
 
     if (!company) {
       return res.status(404).json({
@@ -215,9 +215,23 @@ exports.deleteCompany = async (req, res) => {
       });
     }
 
+    const gfsBucket = req.app.get("gfsBucket");
+
+    // Delete logo from GridFS if it exists
+    if (company.logo) {
+      try {
+        await gfsBucket.delete(new ObjectId(company.logo));
+      } catch (err) {
+        console.warn("Failed to delete logo from GridFS:", err.message);
+      }
+    }
+
+    // Delete the company document
+    await Company.findByIdAndDelete(req.params.id);
+
     res.status(200).json({
       status: "Success",
-      message: "Company deleted successfully",
+      message: "Company and associated logo deleted successfully",
     });
 
   } catch (err) {
@@ -227,6 +241,29 @@ exports.deleteCompany = async (req, res) => {
     });
   }
 };
+// exports.deleteCompany = async (req, res) => {
+//   try {
+//     const company = await Company.findByIdAndDelete(req.params.id);
+
+//     if (!company) {
+//       return res.status(404).json({
+//         status: "Failed",
+//         message: "Company not found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       status: "Success",
+//       message: "Company deleted successfully",
+//     });
+
+//   } catch (err) {
+//     res.status(400).json({
+//       status: "Failed",
+//       message: err.message,
+//     });
+//   }
+// };
 
 /* ---------- GET COMPANY LOGO ---------- */
 exports.getCompanyLogo = (req, res) => {
