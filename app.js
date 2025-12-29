@@ -36,6 +36,7 @@ mongoose.connect(DB).then(() => {
 
 /* ---------- Routes ---------- */
 app.use("/api/v1", companyRouter);
+app.use('/api/v1/review',reviewRouter);
 
 app.get("/review/:companyId", (req, res) => {
   res.sendFile(path.join(__dirname, "review.html"));
