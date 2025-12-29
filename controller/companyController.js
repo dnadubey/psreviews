@@ -67,24 +67,50 @@ exports.getCompany = async (req, res) => {
 /* ---------- UPDATE COMPANY ---------- */
 exports.updateCompany = async (req, res) => {
   try {
-    const updatedCompany = await Company.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const companyId = req.params.id;
 
-    if (!updatedCompany) {
+    const company = await Company.findById(companyId);
+    if (!company) {
       return res.status(404).json({
         status: "Failed",
         message: "Company not found",
       });
     }
 
+    // ✅ Update normal fields
+    company.name = req.body.name ?? company.name;
+    company.title = req.body.title ?? company.title;
+    company.googleReviewLink =
+      req.body.googleReviewLink ?? company.googleReviewLink;
+    company.minimumRating =
+      req.body.minimumRating ?? company.minimumRating;
+    company.negativeReviewEmail =
+      req.body.negativeReviewEmail ?? company.negativeReviewEmail;
+
+    // ✅ If new logo uploaded
+    if (req.file) {
+      // 🔥 Delete old logo from GridFS
+      if (company.logo) {
+        try {
+          await gfsBucket.delete(
+            new mongoose.Types.ObjectId(company.logo)
+          );
+        } catch (err) {
+          console.warn("Old logo not found in GridFS");
+        }
+      }
+
+      // ✅ Save new logo ObjectId
+      company.logo = req.file.id;
+    }
+
+    await company.save();
+
     res.status(200).json({
       status: "Success",
-      data: updatedCompany,
+      message: "Company updated successfully",
+      data: company,
     });
-
   } catch (err) {
     res.status(400).json({
       status: "Failed",
@@ -92,6 +118,33 @@ exports.updateCompany = async (req, res) => {
     });
   }
 };
+// exports.updateCompany = async (req, res) => {
+//   try {
+//     const updatedCompany = await Company.findByIdAndUpdate(
+//       req.params.id,
+//       req.body,
+//       { new: true, runValidators: true }
+//     );
+
+//     if (!updatedCompany) {
+//       return res.status(404).json({
+//         status: "Failed",
+//         message: "Company not found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       status: "Success",
+//       data: updatedCompany,
+//     });
+
+//   } catch (err) {
+//     res.status(400).json({
+//       status: "Failed",
+//       message: err.message,
+//     });
+//   }
+// };
 
 /* ---------- DELETE COMPANY ---------- */
 exports.deleteCompany = async (req, res) => {
