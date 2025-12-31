@@ -31,53 +31,54 @@ exports.submitReview = async (req, res) => {
     }
 
     // Render Google review redirect page
-    return res.send(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Leave a Google Review</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-          }
-          .card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-          }
-          button {
-            margin-top: 20px;
-            padding: 12px 20px;
-            font-size: 16px;
-            background: #1a73e8;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-          }
-          button:hover {
-            background: #1558b0;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="card">
-          <h2>Thank you for your positive feedback ⭐⭐⭐⭐</h2>
-          <p>Would you like to leave a review on Google?</p>
-          <button onclick="window.location.href='${company.googleReviewLink}'">
-            Leave Review
-          </button>
-        </div>
-      </body>
-      </html>
-    `);
+    return res.redirect(company.googleReviewLink);
+    // return res.send(`
+    //   <!DOCTYPE html>
+    //   <html>
+    //   <head>
+    //     <title>Leave a Google Review</title>
+    //     <style>
+    //       body {
+    //         font-family: Arial, sans-serif;
+    //         background: #f5f5f5;
+    //         display: flex;
+    //         justify-content: center;
+    //         align-items: center;
+    //         height: 100vh;
+    //       }
+    //       .card {
+    //         background: white;
+    //         padding: 30px;
+    //         border-radius: 12px;
+    //         text-align: center;
+    //         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    //       }
+    //       button {
+    //         margin-top: 20px;
+    //         padding: 12px 20px;
+    //         font-size: 16px;
+    //         background: #1a73e8;
+    //         color: white;
+    //         border: none;
+    //         border-radius: 6px;
+    //         cursor: pointer;
+    //       }
+    //       button:hover {
+    //         background: #1558b0;
+    //       }
+    //     </style>
+    //   </head>
+    //   <body>
+    //     <div class="card">
+    //       <h2>Thank you for your positive feedback ⭐⭐⭐⭐</h2>
+    //       <p>Would you like to leave a review on Google?</p>
+    //       <button onclick="window.location.href='${company.googleReviewLink}'">
+    //         Leave Review
+    //       </button>
+    //     </div>
+    //   </body>
+    //   </html>
+    // `);
 
   } catch (error) {
     console.error(error);
