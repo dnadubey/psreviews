@@ -1,11 +1,12 @@
 const Review=require('./../modal/reviewModel')
 
 exports.submitReview=async (req, res) => {
-  console.log(`req.body:${req.body}`);
+  //console.log(`req.body:${req.body}`);
+  console.log("req.body:", req.body);
   try {
     const data= await Review.create(req.body);
     
-
+    
     res.send("<h2 style='text-align:center'>Thank you for your review ⭐</h2>");
   } catch (error) {
     console.error(error);
