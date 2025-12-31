@@ -31,7 +31,17 @@ exports.submitReview = async (req, res) => {
     }
 
     // Render Google review redirect page
-    return res.redirect(company.googleReviewLink);
+    if (company.googleReviewLink) {
+      // Only redirect if the link exists
+      return res.redirect(company.googleReviewLink);
+    } else {
+      // Optional: show a message if no review link is available
+      return res.send(`
+      <h2 style="text-align:center">
+        Thank you for your feedback ⭐
+      </h2>
+    `);
+    }
     // return res.send(`
     //   <!DOCTYPE html>
     //   <html>
