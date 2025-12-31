@@ -53,6 +53,7 @@ exports.submitReview = async (req, res) => {
           `,
         };
 
+        console.log("sending email");
         // Send email
         transporter.sendMail(mailOptions, (err, info) => {
           if (err) {
