@@ -40,69 +40,115 @@ exports.submitReview = async (req, res) => {
       // return res.redirect(company.googleReviewLink);
 
       return res.send(
-        `
-        <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Leave a Review</title>
-      <style>
-        body {
-          font-family: Arial, sans-serif;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 100vh;
-          background: #f5f5f5;
-        }
-        .card {
-          background: #fff;
-          padding: 24px;
-          border-radius: 10px;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-          text-align: center;
-          width: 300px;
-        }
-        .btn {
-          display: block;
-          margin: 12px 0;
-          padding: 12px;
-          text-decoration: none;
-          color: #fff;
-          border-radius: 6px;
-          font-weight: bold;
-        }
-        .google { background: #4285F4; }
-        .facebook { background: #1877F2; }
-        .instagram { background: #E1306C; }
-      </style>
-    </head>
-    <body>
-      <div class="card">
-        <h2>Leave a Review ⭐</h2>
-        <p>Select a platform</p>
+       `
+       <!DOCTYPE html>
+<html>
+<head>
+  <title>Leave a Review</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        ${company.googleReviewLink ? `
-          <a class="btn google" href="${company.googleReviewLink}">
-            Review on Google
-          </a>
-        ` : ''}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        ${company.faceBookReviewLink ? `
-          <a class="btn facebook" href="${company.faceBookReviewLink}">
-            Review on Facebook
-          </a>
-        ` : ''}
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 16px;
+      background: #f5f5f5;
+    }
 
-        ${company.instagramReviewLink ? `
-          <a class="btn instagram" href="${company.instagramReviewLink}">
-            Review on Instagram
-          </a>
-        ` : ''}
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 360px;
+    }
 
-      </div>
-    </body>
-    </html>
-        `
+    h2 {
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    p {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      margin: 12px 0;
+      padding: 14px;
+      text-decoration: none;
+      color: #fff;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+      opacity: 0.9;
+    }
+
+    .google { background: #4285F4; }
+    .facebook { background: #1877F2; }
+    .instagram { background: #E1306C; }
+
+    /* Tablet & above */
+    @media (min-width: 600px) {
+      .card {
+        padding: 28px;
+      }
+
+      h2 {
+        font-size: 24px;
+      }
+
+      .btn {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h2>Leave a Review ⭐</h2>
+    <p>Select a platform</p>
+
+    ${company.googleReviewLink ? `
+      <a class="btn google" href="${company.googleReviewLink}">
+        Review on Google
+      </a>
+    ` : ''}
+
+    ${company.faceBookReviewLink ? `
+      <a class="btn facebook" href="${company.faceBookReviewLink}">
+        Review on Facebook
+      </a>
+    ` : ''}
+
+    ${company.instagramReviewLink ? `
+      <a class="btn instagram" href="${company.instagramReviewLink}">
+        Review on Instagram
+      </a>
+    ` : ''}
+  </div>
+</body>
+</html>
+
+       `
       )
 
     } else {
