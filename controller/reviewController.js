@@ -101,9 +101,27 @@ exports.submitReview = async (req, res) => {
       opacity: 0.9;
     }
 
-    .google { background: #4285F4; }
-    .facebook { background: #1877F2; }
-    .instagram { background: #E1306C; }
+    .google {
+      background: #E1306C; /* Google Blue (Material) */
+    }
+    
+    .facebook {
+      background: #1877F2; /* Official Facebook Blue */
+    }
+    
+    .instagram {
+      background: linear-gradient(
+        45deg,
+        #F58529,
+        #DD2A7B,
+        #8134AF,
+        #515BD4
+      ); /* Official Instagram gradient */
+    }
+    
+    // .google { background: #4285F4; }
+    // .facebook { background: #1877F2; }
+    // .instagram { background: #E1306C; }
 
     /* Tablet & above */
     @media (min-width: 600px) {
