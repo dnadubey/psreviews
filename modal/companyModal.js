@@ -10,6 +10,8 @@ const CompanySchema = new mongoose.Schema(
     },
 
     googleReviewLink: String,
+    faceBookReviewLink: String,
+    instagramReviewLink: String,
     minimumRating: Number,
     negativeReviewEmail: String,
     isActive: {

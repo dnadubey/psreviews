@@ -35,9 +35,76 @@ exports.submitReview = async (req, res) => {
     }
 
     // Render Google review redirect page
-    if (company.googleReviewLink) {
+    if (company.googleReviewLink || company.faceBookReviewLink ||company.instagramReviewLink) {
       // Only redirect if the link exists
-      return res.redirect(company.googleReviewLink);
+      // return res.redirect(company.googleReviewLink);
+
+      return res.send(
+        `
+        <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Leave a Review</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          background: #f5f5f5;
+        }
+        .card {
+          background: #fff;
+          padding: 24px;
+          border-radius: 10px;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+          text-align: center;
+          width: 300px;
+        }
+        .btn {
+          display: block;
+          margin: 12px 0;
+          padding: 12px;
+          text-decoration: none;
+          color: #fff;
+          border-radius: 6px;
+          font-weight: bold;
+        }
+        .google { background: #4285F4; }
+        .facebook { background: #1877F2; }
+        .instagram { background: #E1306C; }
+      </style>
+    </head>
+    <body>
+      <div class="card">
+        <h2>Leave a Review ⭐</h2>
+        <p>Select a platform</p>
+
+        ${company.googleReviewLink ? `
+          <a class="btn google" href="${company.googleReviewLink}">
+            Review on Google
+          </a>
+        ` : ''}
+
+        ${company.facebookReviewLink ? `
+          <a class="btn facebook" href="${company.faceBookReviewLink}">
+            Review on Facebook
+          </a>
+        ` : ''}
+
+        ${company.instagramReviewLink ? `
+          <a class="btn instagram" href="${company.instagramReviewLink}">
+            Review on Instagram
+          </a>
+        ` : ''}
+
+      </div>
+    </body>
+    </html>
+        `
+      )
+
     } else {
       // Optional: show a message if no review link is available
       return res.send(`
