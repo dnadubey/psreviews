@@ -87,7 +87,7 @@ exports.submitReview = async (req, res) => {
           </a>
         ` : ''}
 
-        ${company.facebookReviewLink ? `
+        ${company.faceBookReviewLink ? `
           <a class="btn facebook" href="${company.faceBookReviewLink}">
             Review on Facebook
           </a>

@@ -29,7 +29,7 @@ exports.addCompany = async (req, res) => {
       title: req.body.title,
       googleReviewLink: req.body.googleReviewLink,
       faceBookReviewLink: req.body.faceBookReviewLink,
-      instgramReviewLink: req.body.instagramReviewLink,
+      instagramReviewLink: req.body.instagramReviewLink,
       minimumRating: req.body.minimumRating,
       negativeReviewEmail: req.body.negativeReviewEmail,
       logo: logoId,
