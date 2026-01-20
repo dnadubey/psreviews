@@ -83,6 +83,8 @@ exports.updateCompany = async (req, res) => {
       name: req.body.name,
       title: req.body.title,
       googleReviewLink: req.body.googleReviewLink,
+      faceBookReviewLink: req.body.faceBookReviewLink,
+      instagramReviewLink: req.body.instagramReviewLink,
       minimumRating: req.body.minimumRating,
       negativeReviewEmail: req.body.negativeReviewEmail,
     };
