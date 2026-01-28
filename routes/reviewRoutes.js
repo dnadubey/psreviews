@@ -9,6 +9,6 @@ router.route("/:companyId")
             .get(reviewController.getReviews);            
            
 
-                      
+            // DATABASE=mongodb+srv://adityadubey:<PASSWORD>@cluster0.k3jf7tw.mongodb.net/psreviews
 
 module.exports = router;
